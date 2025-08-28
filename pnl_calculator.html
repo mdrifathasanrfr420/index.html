@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PnL Calculator</title>
+<style>
+body{font-family:system-ui,Arial,Helvetica,sans-serif;max-width:960px;margin:18px auto;padding:12px;}
+input,select,button{padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ccc;width:100%;}
+.row{display:flex;gap:10px;flex-wrap:wrap;}
+.col{flex:1;min-width:140px;}
+.card{border:1px solid #eee;padding:12px;border-radius:8px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+#pnlRes{white-space:pre-wrap;font-family:monospace;}
+canvas{max-width:100%;height:240px;}
+button{cursor:pointer;background:#0066ff;color:#fff;border:none;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h2>PnL Calculator</h2>
+<div class="card">
+<label>Position type</label>
+<select id="side"><option value="long">Long</option><option value="short">Short</option></select>
+
+<label>Margin (USD)</label>
+<input id="margin" type="number" step="any" placeholder="e.g., 5">
+
+<div class="row">
+  <div class="col">
+    <label>Entry price</label><input id="entry" type="number" step="any" placeholder="Entry">
+  </div>
+  <div class="col">
+    <label>Current price</label><input id="current" type="number" step="any" placeholder="Current">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <label>Stop Loss price</label><input id="sl" type="number" step="any" placeholder="Stop Loss">
+  </div>
+  <div class="col">
+    <label>Take Profit price</label><input id="tp" type="number" step="any" placeholder="Take Profit">
+  </div>
+</div>
+
+<label>Leverage (e.g., 10)</label>
+<input id="lev" type="number" step="1" placeholder="Leverage">
+
+<button id="calc">Calculate</button>
+</div>
+
+<div class="card">
+<h3>Results</h3>
+<div id="pnlRes">এখানে রেজাল্ট দেখাবে</div>
+</div>
+
+<div class="card">
+<canvas id="pnlChart"></canvas>
+</div>
+
+<script>
+function fmt(n){ return Number(n).toLocaleString(undefined,{maximumFractionDigits:8}); }
+
+function compute(){
+  const side = document.getElementById('side').value;
+  const margin = Number(document.getElementById('margin').value) || 0;
+  const entry = Number(document.getElementById('entry').value) || 0;
+  const current = Number(document.getElementById('current').value) || 0;
+  const sl = document.getElementById('sl').value ? Number(document.getElementById('sl').value) : null;
+  const tp = document.getElementById('tp').value ? Number(document.getElementById('tp').value) : null;
+  const lev = Number(document.getElementById('lev').value) || 1;
+
+  if(entry <= 0 || margin <= 0){ document.getElementById('pnlRes').innerText = 'Entry and Margin must be > 0'; return; }
+
+  const positionSize = margin * lev;
+  const coins = positionSize / entry;
+
+  function profitAt(price){
+    if(!price && price !== 0) return null;
+    let p = (side === 'long') ? (price - entry) * coins : (entry - price) * coins;
+    const roi = (p / margin) * 100;
+    return {usd: p, roi: roi};
+  }
+
+  const cur = profitAt(current);
+  const slp = profitAt(sl);
+  const tpp = profitAt(tp);
+
+  let out = '';
+  out += `Position: ${side.toUpperCase()}  | Margin: $${fmt(margin)}  | Leverage: x${lev}\n`;
+  out += `Notional (position size): $${fmt(positionSize)}  | Contracts: ${fmt(coins)}\n\n`;
+  out += `Entry: ${fmt(entry)}\n`;
+  out += `Current: ${fmt(current)} → Profit: ${cur ? ('$'+fmt(cur.usd)+'  ('+fmt(cur.roi)+'%)') : '—'}\n`;
+  out += `Stop Loss: ${sl?fmt(sl):'—'} → Profit: ${slp?('$'+fmt(slp.usd)+'  ('+fmt(slp.roi)+'%)'):'—'}\n`;
+  out += `Take Profit: ${tp?fmt(tp):'—'} → Profit: ${tpp?('$'+fmt(tpp.usd)+'  ('+fmt(tpp.roi)+'%)'):'—'}\n\n`;
+  out += 'নোট: margin * leverage = position size ধরে হিসাব করা হয়েছে; fees বা exchange-specific contract-size ignore করা হয়েছে।';
+
+  document.getElementById('pnlRes').innerText = out;
+
+  const labels = ['Entry','Stop Loss','Current','Take Profit'];
+  const data = [entry, sl || null, current, tp || null];
+
+  if(window.myChart) window.myChart.destroy();
+  const ctx = document.getElementById('pnlChart').getContext('2d');
+  window.myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Price Levels',
+        data: data,
+        borderColor: 'blue',
+        tension: 0.2,
+        fill: false,
+        spanGaps: true,
+        pointRadius: 6
+      }]
+    },
+    options: { responsive: true, scales: { y: { beginAtZero: false } } }
+  });
+}
+
+document.getElementById('calc').addEventListener('click', compute);
+</script>
+</body>
+</html>
