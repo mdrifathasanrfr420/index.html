@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Futures PnL & Liquidation Calculator</title>
-    <!-- Tailwind CSS for styling -->
+    <!-- Tailwind CSS for styling with dark mode enabled -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class'
+      }
+    </script>
     <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Google Fonts for a premium feel -->
@@ -13,22 +18,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom styles for the premium UI */
         body {
             font-family: 'Inter', sans-serif;
         }
-        
-        /* Glassmorphism effect for cards in dark mode */
         .dark .glass-card {
             background: rgba(255, 255, 255, 0.05);
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Styles for the theme switcher toggle */
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #4f46e5;
         }
     </style>
 </head>
@@ -54,120 +51,9 @@
 
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        
-        <!-- Left Side: Inputs -->
         <div class="lg:col-span-2">
             <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 dark:glass-card p-6 rounded-2xl shadow-lg dark:shadow-2xl">
-                <div class="grid grid-cols-1 gap-5">
-                    
-                    <!-- Position Type -->
-                    <div>
-                        <label for="type" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Position Type</label>
-                        <select id="type" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white">
-                            <option value="long">Long</option>
-                            <option value="short">Short</option>
-                        </select>
-                    </div>
-
-                    <!-- Margin -->
-                    <div>
-                        <label for="margin" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Margin (USDT)</label>
-                        <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-semibold bg-gray-100 dark:bg-gray-600">$</span>
-                            <input type="number" id="margin" placeholder="100" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
-                        </div>
-                    </div>
-
-                    <!-- Leverage -->
-                     <div>
-                        <label for="leverage" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Leverage</label>
-                        <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-semibold bg-gray-100 dark:bg-gray-600">x</span>
-                            <input type="number" id="leverage" placeholder="10" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
-                        </div>
-                    </div>
-
-                    <!-- Entry Price -->
-                    <div>
-                        <label for="entry" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Entry Price</label>
-                        <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-blue-600">Entry</span>
-                            <input type="number" id="entry" placeholder="50000" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
-                        </div>
-                    </div>
-
-                    <!-- Current Price -->
-                    <div>
-                        <label for="current" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Current Price</label>
-                        <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-green-600">Current</span>
-                            <input type="number" id="current" placeholder="51000" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
-                        </div>
-                    </div>
-
-                    <!-- Stop Loss -->
-                    <div>
-                        <label for="sl" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Stop Loss Price</label>
-                        <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-red-600">StopLoss</span>
-                            <input type="number" id="sl" placeholder="Optional" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
-                        </div>
-                    </div>
-
-                    <!-- Take Profit -->
-                    <div>
-                        <label for="tp" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Take Profit Price</label>
-                        <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-orange-500">TakeProfit</span>
-                            <input type="number" id="tp" placeholder="Optional" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-8">
-                    <button onclick="calculate()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
-                        Calculate
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Side: Results & Chart -->
-        <div id="results" class="lg:col-span-3" style="display: none;">
-             <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 dark:glass-card p-6 rounded-2xl shadow-lg dark:shadow-2xl h-full">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Results</h2>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Result Table -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">Current PnL (USDT)</td>
-                                    <td id="cPnl" class="py-3 px-2 text-right font-semibold">-</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">ROI %</td>
-                                    <td id="roi" class="py-3 px-2 text-right font-semibold">-</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">Stop Loss PnL</td>
-                                    <td id="slPnl" class="py-3 px-2 text-right font-semibold">-</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">Take Profit PnL</td>
-                                    <td id="tpPnl" class="py-3 px-2 text-right font-semibold">-</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">Liquidation Price</td>
-                                    <td id="liq" class="py-3 px-2 text-right font-semibold text-red-500 dark:text-red-400">-</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- Chart -->
-                    <div class="h-64">
-                        <canvas id="pnlChart"></canvas>
-                    </div>
-                </div>
+                <p class="text-gray-800 dark:text-gray-200">Toggle the switch to change theme</p>
             </div>
         </div>
     </div>
@@ -178,7 +64,6 @@
 const themeToggle = document.getElementById('theme-toggle');
 const htmlEl = document.documentElement;
 
-// Function to set the theme based on 'dark' or 'light' string
 function applyTheme(theme) {
     if (theme === 'dark') {
         htmlEl.classList.add('dark');
@@ -189,138 +74,15 @@ function applyTheme(theme) {
     }
 }
 
-// On page load, check localStorage for a saved theme
-const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light theme if nothing is saved
+const savedTheme = localStorage.getItem('theme') || 'light';
 applyTheme(savedTheme);
 
-
-// Event listener for the toggle button
 themeToggle.addEventListener('change', () => {
     const newTheme = themeToggle.checked ? 'dark' : 'light';
-    localStorage.setItem('theme', newTheme); // Save the new theme preference
+    localStorage.setItem('theme', newTheme);
     applyTheme(newTheme);
-    
-    // Re-calculate (which also redraws the chart) to update chart colors
-    // Check if a chart instance exists and results are visible before trying to recalculate
-    if(window.myChart && document.getElementById('results').style.display !== 'none') {
-        calculate();
-    }
 });
-
-// --- CALCULATOR LOGIC ---
-function calculate() {
-    const type = document.getElementById('type').value;
-    const margin = parseFloat(document.getElementById('margin').value);
-    const leverage = parseFloat(document.getElementById('leverage').value);
-    const entry = parseFloat(document.getElementById('entry').value);
-    const current = parseFloat(document.getElementById('current').value);
-    const sl = parseFloat(document.getElementById('sl').value) || null;
-    const tp = parseFloat(document.getElementById('tp').value) || null;
-
-    if (isNaN(margin) || isNaN(leverage) || isNaN(entry) || isNaN(current)) {
-        console.error("Please fill in all required fields.");
-        return;
-    }
-    
-    document.getElementById('results').style.display = 'block';
-
-    const quantity = (margin * leverage) / entry;
-    let pnlCurrent, roi, pnlSL = null, pnlTP = null, liq;
-
-    if (type === 'long') {
-        pnlCurrent = (current - entry) * quantity;
-        liq = entry * (1 - (1 / leverage) * 0.98); // More realistic liq price
-        if(sl) pnlSL = (sl - entry) * quantity;
-        if(tp) pnlTP = (tp - entry) * quantity;
-    } else { // Short
-        pnlCurrent = (entry - current) * quantity;
-        liq = entry * (1 + (1 / leverage) * 0.98); // More realistic liq price
-        if(sl) pnlSL = (entry - sl) * quantity;
-        if(tp) pnlTP = (entry - tp) * quantity;
-    }
-
-    roi = (pnlCurrent / margin) * 100;
-
-    const pnlEl = document.getElementById('cPnl');
-    pnlEl.innerText = pnlCurrent.toFixed(2);
-    pnlEl.className = pnlCurrent >= 0 ? 'py-3 px-2 text-right font-semibold text-green-500 dark:text-green-400' : 'py-3 px-2 text-right font-semibold text-red-500 dark:text-red-400';
-    
-    const roiEl = document.getElementById('roi');
-    roiEl.innerText = roi.toFixed(2) + "%";
-    roiEl.className = roi >= 0 ? 'py-3 px-2 text-right font-semibold text-green-500 dark:text-green-400' : 'py-3 px-2 text-right font-semibold text-red-500 dark:text-red-400';
-
-    document.getElementById('slPnl').innerText = pnlSL !== null ? pnlSL.toFixed(2) : "-";
-    document.getElementById('tpPnl').innerText = pnlTP !== null ? pnlTP.toFixed(2) : "-";
-    document.getElementById('liq').innerText = liq.toFixed(4);
-
-    // --- CHART LOGIC ---
-    const ctx = document.getElementById('pnlChart').getContext('2d');
-    
-    if (window.myChart) {
-        window.myChart.destroy();
-    }
-    
-    // Check current theme to set chart colors dynamically
-    const isDarkMode = document.documentElement.classList.contains('dark');
-    const textColor = isDarkMode ? 'rgba(243, 244, 246, 0.9)' : 'rgba(55, 65, 81, 1)';
-    const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(209, 213, 219, 1)';
-
-
-    const chartDataPoints = [
-        { label: "Liquidation", value: liq, color: isDarkMode ? "white" : "black" },
-        { label: "StopLoss", value: sl, color: "rgb(239, 68, 68)" }, // Red
-        { label: "Entry", value: entry, color: "rgb(59, 130, 246)" }, // Blue
-        { label: "Current", value: current, color: "rgb(34, 197, 94)" }, // Green
-        { label: "TakeProfit", value: tp, color: "rgb(249, 115, 22)" }, // Orange
-    ]
-    .filter(p => p.value !== null && !isNaN(p.value))
-    .sort((a, b) => a.value - b.value);
-    
-    window.myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: chartDataPoints.map(p => p.label),
-            datasets: [{
-                label: 'Price Levels',
-                data: chartDataPoints.map(p => p.value),
-                borderColor: 'rgb(139, 92, 246)',
-                pointBackgroundColor: chartDataPoints.map(p => p.color),
-                tension: 0.2,
-                fill: false,
-                pointRadius: 6,
-                pointHoverRadius: 9,
-                borderWidth: 2,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: 'rgba(0,0,0,0.8)',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
-                    callbacks: {
-                        label: (context) => `${context.chart.data.labels[context.dataIndex]}: ${context.parsed.y.toFixed(4)}`
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    ticks: { color: textColor, font: { size: 10 } },
-                    grid: { color: gridColor }
-                },
-                x: {
-                    ticks: { color: textColor, font: { size: 10 } },
-                    grid: { display: false }
-                }
-            }
-        }
-    });
-}
 </script>
 
 </body>
 </html>
-
