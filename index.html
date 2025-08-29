@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark"> <!-- Default to dark mode for a premium feel -->
+<html lang="en" class="dark"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,8 +18,8 @@
             font-family: 'Inter', sans-serif;
         }
         
-        /* Glassmorphism effect for cards */
-        .glass-card {
+        /* Glassmorphism effect for cards in dark mode */
+        .dark .glass-card {
             background: rgba(255, 255, 255, 0.05);
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
@@ -32,21 +32,21 @@
         }
     </style>
 </head>
-<body class="bg-gray-900 bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-gray-100 min-h-screen">
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:bg-gradient-to-br dark:from-[#0f0c29] dark:via-[#302b63] dark:to-[#24243e] dark:text-gray-100 min-h-screen transition-colors duration-300">
 
 <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
 
     <!-- Header Section -->
     <header class="flex flex-col sm:flex-row justify-between items-center mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-0">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-0">
             Futures PnL Calculator ⚡️
         </h1>
         <!-- Theme Switcher -->
         <div class="flex items-center">
-            <span class="text-sm text-gray-400 mr-3 font-medium">Light / Dark</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400 mr-3 font-medium">Light / Dark</span>
             <label for="theme-toggle" class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" id="theme-toggle" class="sr-only peer" checked>
-                <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-indigo-600 transition-colors"></div>
+                <div class="w-11 h-6 bg-gray-300 dark:bg-gray-700 rounded-full peer peer-checked:bg-indigo-600 transition-colors"></div>
                 <div class="absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform peer-checked:translate-x-full"></div>
             </label>
         </div>
@@ -57,13 +57,13 @@
         
         <!-- Left Side: Inputs -->
         <div class="lg:col-span-2">
-            <div class="glass-card p-6 rounded-2xl shadow-2xl">
+            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 dark:glass-card p-6 rounded-2xl shadow-lg dark:shadow-2xl">
                 <div class="grid grid-cols-1 gap-5">
                     
                     <!-- Position Type -->
                     <div>
-                        <label for="type" class="block text-sm font-medium text-gray-300 mb-1">Position Type</label>
-                        <select id="type" class="w-full py-2.5 px-3 bg-gray-700/70 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white">
+                        <label for="type" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Position Type</label>
+                        <select id="type" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white">
                             <option value="long">Long</option>
                             <option value="short">Short</option>
                         </select>
@@ -71,55 +71,55 @@
 
                     <!-- Margin -->
                     <div>
-                        <label for="margin" class="block text-sm font-medium text-gray-300 mb-1">Margin (USDT)</label>
+                        <label for="margin" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Margin (USDT)</label>
                         <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-600 text-white text-sm font-semibold bg-gray-600">$</span>
-                            <input type="number" id="margin" placeholder="100" class="w-full py-2.5 px-3 bg-gray-700/70 border border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-gray-300">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-semibold bg-gray-100 dark:bg-gray-600">$</span>
+                            <input type="number" id="margin" value="100" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
                     <!-- Leverage -->
                      <div>
-                        <label for="leverage" class="block text-sm font-medium text-gray-300 mb-1">Leverage</label>
+                        <label for="leverage" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Leverage</label>
                         <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-600 text-white text-sm font-semibold bg-gray-600">x</span>
-                            <input type="number" id="leverage" placeholder="10" class="w-full py-2.5 px-3 bg-gray-700/70 border border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-gray-300">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-semibold bg-gray-100 dark:bg-gray-600">x</span>
+                            <input type="number" id="leverage" value="10" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
                     <!-- Entry Price -->
                     <div>
-                        <label for="entry" class="block text-sm font-medium text-gray-300 mb-1">Entry Price</label>
+                        <label for="entry" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Entry Price</label>
                         <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-600 text-white text-sm font-semibold bg-blue-600">Entry</span>
-                            <input type="number" id="entry" placeholder="50000" class="w-full py-2.5 px-3 bg-gray-700/70 border border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-gray-300">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-blue-600">Entry</span>
+                            <input type="number" id="entry" value="50000" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
                     <!-- Current Price -->
                     <div>
-                        <label for="current" class="block text-sm font-medium text-gray-300 mb-1">Current Price</label>
+                        <label for="current" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Current Price</label>
                         <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-600 text-white text-sm font-semibold bg-green-600">Current</span>
-                            <input type="number" id="current" placeholder="51000" class="w-full py-2.5 px-3 bg-gray-700/70 border border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-gray-300">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-green-600">Current</span>
+                            <input type="number" id="current" value="51000" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
                     <!-- Stop Loss -->
                     <div>
-                        <label for="sl" class="block text-sm font-medium text-gray-300 mb-1">Stop Loss Price</label>
+                        <label for="sl" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Stop Loss Price</label>
                         <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-600 text-white text-sm font-semibold bg-red-600">StopLoss</span>
-                            <input type="number" id="sl" placeholder="Optional" class="w-full py-2.5 px-3 bg-gray-700/70 border border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-gray-300">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-red-600">StopLoss</span>
+                            <input type="number" id="sl" placeholder="Optional" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
                     <!-- Take Profit -->
                     <div>
-                        <label for="tp" class="block text-sm font-medium text-gray-300 mb-1">Take Profit Price</label>
+                        <label for="tp" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Take Profit Price</label>
                         <div class="flex items-center">
-                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-600 text-white text-sm font-semibold bg-orange-500">TakeProfit</span>
-                            <input type="number" id="tp" placeholder="Optional" class="w-full py-2.5 px-3 bg-gray-700/70 border border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-gray-300">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-orange-500">TakeProfit</span>
+                            <input type="number" id="tp" placeholder="Optional" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
                 </div>
@@ -133,32 +133,32 @@
 
         <!-- Right Side: Results & Chart -->
         <div id="results" class="lg:col-span-3" style="display: none;">
-             <div class="glass-card p-6 rounded-2xl shadow-2xl h-full">
-                <h2 class="text-2xl font-bold text-white mb-4">Results</h2>
+             <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 dark:glass-card p-6 rounded-2xl shadow-lg dark:shadow-2xl h-full">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Results</h2>
                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Result Table -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
-                            <tbody class="divide-y divide-gray-700">
-                                <tr class="hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-300">Current PnL (USDT)</td>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
+                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">Current PnL (USDT)</td>
                                     <td id="cPnl" class="py-3 px-2 text-right font-semibold">-</td>
                                 </tr>
-                                <tr class="hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-300">ROI %</td>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
+                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">ROI %</td>
                                     <td id="roi" class="py-3 px-2 text-right font-semibold">-</td>
                                 </tr>
-                                <tr class="hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-300">Stop Loss PnL</td>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
+                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">Stop Loss PnL</td>
                                     <td id="slPnl" class="py-3 px-2 text-right font-semibold">-</td>
                                 </tr>
-                                <tr class="hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-300">Take Profit PnL</td>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
+                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">Take Profit PnL</td>
                                     <td id="tpPnl" class="py-3 px-2 text-right font-semibold">-</td>
                                 </tr>
-                                <tr class="hover:bg-white/5">
-                                    <td class="py-3 px-2 text-sm font-medium text-gray-300">Liquidation Price</td>
-                                    <td id="liq" class="py-3 px-2 text-right font-semibold text-red-400">-</td>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
+                                    <td class="py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-300">Liquidation Price</td>
+                                    <td id="liq" class="py-3 px-2 text-right font-semibold text-red-500 dark:text-red-400">-</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -178,6 +178,16 @@
 const themeToggle = document.getElementById('theme-toggle');
 const htmlEl = document.documentElement;
 
+// Check local storage for saved theme preference
+if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  themeToggle.checked = true;
+  htmlEl.classList.add('dark');
+} else {
+  themeToggle.checked = false;
+  htmlEl.classList.remove('dark');
+}
+
+
 themeToggle.addEventListener('change', () => {
     if (themeToggle.checked) {
         htmlEl.classList.add('dark');
@@ -186,7 +196,7 @@ themeToggle.addEventListener('change', () => {
         htmlEl.classList.remove('dark');
         localStorage.theme = 'light';
     }
-    // Theming is now handled by CSS variables or will be implemented if needed
+    // Re-calculate (which also redraws the chart) to update chart colors
     if(window.myChart) {
         calculate();
     }
@@ -203,6 +213,7 @@ function calculate() {
     const tp = parseFloat(document.getElementById('tp').value) || null;
 
     if (isNaN(margin) || isNaN(leverage) || isNaN(entry) || isNaN(current)) {
+        // You can add a more user-friendly error message here if you want
         console.error("Please fill in all required fields.");
         return;
     }
@@ -228,11 +239,11 @@ function calculate() {
 
     const pnlEl = document.getElementById('cPnl');
     pnlEl.innerText = pnlCurrent.toFixed(2);
-    pnlEl.className = pnlCurrent >= 0 ? 'py-3 px-2 text-right font-semibold text-green-400' : 'py-3 px-2 text-right font-semibold text-red-400';
+    pnlEl.className = pnlCurrent >= 0 ? 'py-3 px-2 text-right font-semibold text-green-500 dark:text-green-400' : 'py-3 px-2 text-right font-semibold text-red-500 dark:text-red-400';
     
     const roiEl = document.getElementById('roi');
     roiEl.innerText = roi.toFixed(2) + "%";
-    roiEl.className = roi >= 0 ? 'py-3 px-2 text-right font-semibold text-green-400' : 'py-3 px-2 text-right font-semibold text-red-400';
+    roiEl.className = roi >= 0 ? 'py-3 px-2 text-right font-semibold text-green-500 dark:text-green-400' : 'py-3 px-2 text-right font-semibold text-red-500 dark:text-red-400';
 
     document.getElementById('slPnl').innerText = pnlSL !== null ? pnlSL.toFixed(2) : "-";
     document.getElementById('tpPnl').innerText = pnlTP !== null ? pnlTP.toFixed(2) : "-";
@@ -245,11 +256,14 @@ function calculate() {
         window.myChart.destroy();
     }
     
-    const textColor = 'rgba(243, 244, 246, 0.9)'; // Brighter text color for chart
-    const gridColor = 'rgba(255, 255, 255, 0.1)';
+    // Check current theme to set chart colors dynamically
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    const textColor = isDarkMode ? 'rgba(243, 244, 246, 0.9)' : 'rgba(55, 65, 81, 1)';
+    const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(209, 213, 219, 1)';
+
 
     const chartDataPoints = [
-        { label: "Liquidation", value: liq, color: "black" },
+        { label: "Liquidation", value: liq, color: isDarkMode ? "white" : "black" },
         { label: "StopLoss", value: sl, color: "rgb(239, 68, 68)" }, // Red
         { label: "Entry", value: entry, color: "rgb(59, 130, 246)" }, // Blue
         { label: "Current", value: current, color: "rgb(34, 197, 94)" }, // Green
@@ -280,7 +294,7 @@ function calculate() {
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    backgroundColor: 'rgba(0,0,0,0.8)',
                     titleColor: '#fff',
                     bodyColor: '#fff',
                     callbacks: {
@@ -301,8 +315,12 @@ function calculate() {
         }
     });
 }
+
+// Automatically run calculate on page load with initial values
+window.onload = function() {
+    calculate();
+}
 </script>
 
 </body>
 </html>
-
