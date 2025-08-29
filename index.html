@@ -1,121 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pro Futures Calculator</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#0d1117;color:#e6edf3;margin:0;padding:20px}
-    h1{font-size:26px;margin-bottom:20px;text-align:center}
-    .card{background:#161b22;padding:20px;border-radius:16px;box-shadow:0 0 15px rgba(0,0,0,.4);margin-bottom:20px}
-    label{font-size:13px;color:#adbac7;display:block;margin-bottom:5px}
-    input,select{width:100%;padding:10px;border-radius:8px;border:1px solid #30363d;background:#0d1117;color:#e6edf3;margin-bottom:12px}
-    button{padding:12px 18px;border:none;border-radius:10px;background:#238636;color:white;font-weight:bold;cursor:pointer}
-    button:hover{background:#2ea043}
-    table{width:100%;border-collapse:collapse;margin-top:15px}
-    th,td{border:1px solid #30363d;padding:10px;text-align:center}
-    th{background:#21262d;color:#adbac7}
-    .highlight{font-weight:bold;color:#2ea043}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futures Calculator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
+  }
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  .form-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .form-group label {
+    flex: 1;
+  }
+  .form-group input, .form-group select {
+    flex: 2;
+  }
+  button {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  .results {
+    margin-top: 20px;
+  }
+  .toggle-mode {
+    float: right;
+    margin-bottom: 20px;
+  }
+</style>
 </head>
 <body>
-  <h1>Futures PnL + Liquidation Calculator ⚡</h1>
-
-  <div class="card">
-    <label>Position Type</label>
-    <select id="side">
-      <option value="long">Long</option>
-      <option value="short">Short</option>
+<div class="container">
+  <button class="toggle-mode" onclick="toggleMode()">Toggle Dark/Light</button>
+  <h2>Futures PnL + Liquidation Calculator</h2>
+  <div class="form-group">
+    <label for="position">Position Type</label>
+    <select id="position">
+      <option value="Long">Long</option>
+      <option value="Short">Short</option>
     </select>
-
-    <label>Margin (USDT)</label>
-    <input type="number" id="margin" step="0.01">
-
-    <label>Leverage</label>
-    <input type="number" id="lev" step="1" value="20">
-
-    <label>Entry Price</label>
-    <input type="number" id="entry" step="0.0001">
-
-    <label>Current Price</label>
-    <input type="number" id="current" step="0.0001">
-
-    <label>Stop Loss</label>
-    <input type="number" id="sl" step="0.0001">
-
-    <label>Take Profit</label>
-    <input type="number" id="tp" step="0.0001">
-
-    <label>Funding Rate (%)</label>
-    <input type="number" id="funding" step="0.0001" placeholder="optional">
-
-    <button onclick="calculate()">Calculate</button>
   </div>
-
-  <div class="card">
-    <h3>Results</h3>
-    <table>
-      <tr><th>Metric</th><th>Value</th></tr>
-      <tr><td>Current PnL (USDT)</td><td id="cPnl">-</td></tr>
-      <tr><td>ROI %</td><td id="roi">-</td></tr>
-      <tr><td>Stop Loss PnL</td><td id="slPnl">-</td></tr>
-      <tr><td>Take Profit PnL</td><td id="tpPnl">-</td></tr>
-      <tr><td>Liquidation Price</td><td id="liq">-</td></tr>
-      <tr><td>Funding Fee (approx)</td><td id="fundingFee">-</td></tr>
-    </table>
+  <div class="form-group">
+    <label for="margin">Margin (USDT)</label>
+    <input type="number" id="margin" value="10">
   </div>
-
-  <div class="card">
-    <canvas id="pnlChart"></canvas>
+  <div class="form-group">
+    <label for="leverage">Leverage</label>
+    <input type="number" id="leverage" value="20">
   </div>
-
+  <div class="form-group">
+    <label for="entry">Entry Price</label>
+    <input type="number" id="entry" value="110000">
+  </div>
+  <div class="form-group">
+    <label for="current">Current Price</label>
+    <input type="number" id="current" value="110100">
+  </div>
+  <div class="form-group">
+    <label for="stoploss">Stop Loss</label>
+    <input type="number" id="stoploss" value="109000">
+  </div>
+  <div class="form-group">
+    <label for="takeprofit">Take Profit</label>
+    <input type="number" id="takeprofit" value="112000">
+  </div>
+  <button onclick="calculate()">Calculate</button>
+  <div class="results" id="results">
+    <p>Current PnL (USDT): <span id="cPnl">-</span></p>
+    <p>ROI %: <span id="roi">-</span></p>
+    <p>Stop Loss PnL: <span id="slPnl">-</span></p>
+    <p>Take Profit PnL: <span id="tpPnl">-</span></p>
+    <p>Liquidation Price: <span id="liq">-</span></p>
+  </div>
+  <canvas id="pnlChart" width="600" height="300"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-function calculate(){
-  let side = document.getElementById('side').value;
-  let margin = parseFloat(document.getElementById('margin').value);
-  let lev = parseFloat(document.getElementById('lev').value);
+function toggleMode() {
+  document.body.classList.toggle('dark-mode');
+}
+function calculate() {
   let entry = parseFloat(document.getElementById('entry').value);
   let current = parseFloat(document.getElementById('current').value);
-  let sl = parseFloat(document.getElementById('sl').value);
-  let tp = parseFloat(document.getElementById('tp').value);
-  let fundingRate = parseFloat(document.getElementById('funding').value);
+  let sl = parseFloat(document.getElementById('stoploss').value);
+  let tp = parseFloat(document.getElementById('takeprofit').value);
+  let margin = parseFloat(document.getElementById('margin').value);
+  let leverage = parseFloat(document.getElementById('leverage').value);
 
-  if(isNaN(margin)||isNaN(lev)||isNaN(entry)||isNaN(current)){
-    alert("Please fill all required fields"); return;
-  }
-
-  let positionSize = margin * lev; 
-  let qty = positionSize / entry; 
-
-  function pnl(price){
-    if(side === "long"){
-      return (price - entry) * qty;
-    } else {
-      return (entry - price) * qty;
-    }
-  }
-
-  let pnlCurrent = pnl(current);
-  let pnlSL = isNaN(sl)? null : pnl(sl);
-  let pnlTP = isNaN(tp)? null : pnl(tp);
+  let pnlCurrent = ((current - entry)/entry) * leverage * margin;
+  let pnlSL = ((sl - entry)/entry) * leverage * margin;
+  let pnlTP = ((tp - entry)/entry) * leverage * margin;
   let roi = (pnlCurrent / margin) * 100;
-
-  let liq;
-  if(side === "long"){
-    liq = entry * (1 - 1/lev);
-  } else {
-    liq = entry * (1 + 1/lev);
-  }
-
-  let fundingFee = isNaN(fundingRate)? null : margin * (fundingRate/100);
+  let liq = entry * (1 - (1/leverage));
 
   document.getElementById('cPnl').innerText = pnlCurrent.toFixed(2);
   document.getElementById('roi').innerText = roi.toFixed(2) + "%";
-  document.getElementById('slPnl').innerText = pnlSL !== null ? pnlSL.toFixed(2) : "-";
-  document.getElementById('tpPnl').innerText = pnlTP !== null ? pnlTP.toFixed(2) : "-";
-  document.getElementById('liq').innerText = liq.toFixed(4);
-  document.getElementById('fundingFee').innerText = fundingFee !== null ? fundingFee.toFixed(4) : "-";
+  document.getElementById('slPnl').innerText = pnlSL.toFixed(2);
+  document.getElementById('tpPnl').innerText = pnlTP.toFixed(2);
+  document.getElementById('liq').innerText = liq.toFixed(2);
 
   // Chart
   const ctx = document.getElementById('pnlChart').getContext('2d');
@@ -126,10 +122,9 @@ function calculate(){
       labels: ["Entry", "StopLoss", "Current", "TakeProfit", "Liquidation"],
       datasets: [{
         label: 'Price Levels',
-        data: [entry, sl||null, current, tp||null, liq],
+        data: [entry, sl, current, tp, liq],
         borderColor: 'blue',
         fill: false,
-        spanGaps:true,
         pointBackgroundColor:["blue","red","green","orange","black"],
         pointRadius:6
       }]
