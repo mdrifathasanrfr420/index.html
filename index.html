@@ -178,24 +178,28 @@
 const themeToggle = document.getElementById('theme-toggle');
 const htmlEl = document.documentElement;
 
-// Check local storage for saved theme preference
-if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-  themeToggle.checked = true;
-  htmlEl.classList.add('dark');
-} else {
-  themeToggle.checked = false;
-  htmlEl.classList.remove('dark');
-}
-
-
-themeToggle.addEventListener('change', () => {
-    if (themeToggle.checked) {
+// Function to set the theme based on 'dark' or 'light' string
+function applyTheme(theme) {
+    if (theme === 'dark') {
         htmlEl.classList.add('dark');
-        localStorage.theme = 'dark';
+        themeToggle.checked = true;
     } else {
         htmlEl.classList.remove('dark');
-        localStorage.theme = 'light';
+        themeToggle.checked = false;
     }
+}
+
+// On page load, check localStorage for a saved theme
+const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light theme if nothing is saved
+applyTheme(savedTheme);
+
+
+// Event listener for the toggle button
+themeToggle.addEventListener('change', () => {
+    const newTheme = themeToggle.checked ? 'dark' : 'light';
+    localStorage.setItem('theme', newTheme); // Save the new theme preference
+    applyTheme(newTheme);
+    
     // Re-calculate (which also redraws the chart) to update chart colors
     // Check if a chart instance exists and results are visible before trying to recalculate
     if(window.myChart && document.getElementById('results').style.display !== 'none') {
@@ -214,10 +218,7 @@ function calculate() {
     const tp = parseFloat(document.getElementById('tp').value) || null;
 
     if (isNaN(margin) || isNaN(leverage) || isNaN(entry) || isNaN(current)) {
-        // You can add a more user-friendly error message here if you want
         console.error("Please fill in all required fields.");
-        // Optionally, show an alert or a message to the user
-        // alert("Please fill in all required fields: Margin, Leverage, Entry Price, and Current Price.");
         return;
     }
     
