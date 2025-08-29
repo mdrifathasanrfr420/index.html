@@ -1,126 +1,142 @@
-<!doctype html>
-<html lang="bn">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PnL Calculator</title>
-<style>
-body{font-family:system-ui,Arial,Helvetica,sans-serif;max-width:960px;margin:18px auto;padding:12px;}
-input,select,button{padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ccc;width:100%;}
-.row{display:flex;gap:10px;flex-wrap:wrap;}
-.col{flex:1;min-width:140px;}
-.card{border:1px solid #eee;padding:12px;border-radius:8px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
-#pnlRes{white-space:pre-wrap;font-family:monospace;}
-canvas{max-width:100%;height:240px;}
-button{cursor:pointer;background:#0066ff;color:#fff;border:none;}
-</style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pro Futures Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#0d1117;color:#e6edf3;margin:0;padding:20px}
+    h1{font-size:26px;margin-bottom:20px;text-align:center}
+    .card{background:#161b22;padding:20px;border-radius:16px;box-shadow:0 0 15px rgba(0,0,0,.4);margin-bottom:20px}
+    label{font-size:13px;color:#adbac7;display:block;margin-bottom:5px}
+    input,select{width:100%;padding:10px;border-radius:8px;border:1px solid #30363d;background:#0d1117;color:#e6edf3;margin-bottom:12px}
+    button{padding:12px 18px;border:none;border-radius:10px;background:#238636;color:white;font-weight:bold;cursor:pointer}
+    button:hover{background:#2ea043}
+    table{width:100%;border-collapse:collapse;margin-top:15px}
+    th,td{border:1px solid #30363d;padding:10px;text-align:center}
+    th{background:#21262d;color:#adbac7}
+    .highlight{font-weight:bold;color:#2ea043}
+  </style>
 </head>
 <body>
-<h2>PnL Calculator</h2>
-<div class="card">
-<label>Position type</label>
-<select id="side"><option value="long">Long</option><option value="short">Short</option></select>
+  <h1>Futures PnL + Liquidation Calculator ⚡</h1>
 
-<label>Margin (USD)</label>
-<input id="margin" type="number" step="any" placeholder="e.g., 5">
+  <div class="card">
+    <label>Position Type</label>
+    <select id="side">
+      <option value="long">Long</option>
+      <option value="short">Short</option>
+    </select>
 
-<div class="row">
-  <div class="col">
-    <label>Entry price</label><input id="entry" type="number" step="any" placeholder="Entry">
+    <label>Margin (USDT)</label>
+    <input type="number" id="margin" step="0.01">
+
+    <label>Leverage</label>
+    <input type="number" id="lev" step="1" value="20">
+
+    <label>Entry Price</label>
+    <input type="number" id="entry" step="0.0001">
+
+    <label>Current Price</label>
+    <input type="number" id="current" step="0.0001">
+
+    <label>Stop Loss</label>
+    <input type="number" id="sl" step="0.0001">
+
+    <label>Take Profit</label>
+    <input type="number" id="tp" step="0.0001">
+
+    <label>Funding Rate (%)</label>
+    <input type="number" id="funding" step="0.0001" placeholder="optional">
+
+    <button onclick="calculate()">Calculate</button>
   </div>
-  <div class="col">
-    <label>Current price</label><input id="current" type="number" step="any" placeholder="Current">
+
+  <div class="card">
+    <h3>Results</h3>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td>Current PnL (USDT)</td><td id="cPnl">-</td></tr>
+      <tr><td>ROI %</td><td id="roi">-</td></tr>
+      <tr><td>Stop Loss PnL</td><td id="slPnl">-</td></tr>
+      <tr><td>Take Profit PnL</td><td id="tpPnl">-</td></tr>
+      <tr><td>Liquidation Price</td><td id="liq">-</td></tr>
+      <tr><td>Funding Fee (approx)</td><td id="fundingFee">-</td></tr>
+    </table>
   </div>
-</div>
 
-<div class="row">
-  <div class="col">
-    <label>Stop Loss price</label><input id="sl" type="number" step="any" placeholder="Stop Loss">
+  <div class="card">
+    <canvas id="pnlChart"></canvas>
   </div>
-  <div class="col">
-    <label>Take Profit price</label><input id="tp" type="number" step="any" placeholder="Take Profit">
-  </div>
-</div>
-
-<label>Leverage (e.g., 10)</label>
-<input id="lev" type="number" step="1" placeholder="Leverage">
-
-<button id="calc">Calculate</button>
-</div>
-
-<div class="card">
-<h3>Results</h3>
-<div id="pnlRes">এখানে রেজাল্ট দেখাবে</div>
-</div>
-
-<div class="card">
-<canvas id="pnlChart"></canvas>
-</div>
 
 <script>
-function fmt(n){ return Number(n).toLocaleString(undefined,{maximumFractionDigits:8}); }
+function calculate(){
+  let side = document.getElementById('side').value;
+  let margin = parseFloat(document.getElementById('margin').value);
+  let lev = parseFloat(document.getElementById('lev').value);
+  let entry = parseFloat(document.getElementById('entry').value);
+  let current = parseFloat(document.getElementById('current').value);
+  let sl = parseFloat(document.getElementById('sl').value);
+  let tp = parseFloat(document.getElementById('tp').value);
+  let fundingRate = parseFloat(document.getElementById('funding').value);
 
-function compute(){
-  const side = document.getElementById('side').value;
-  const margin = Number(document.getElementById('margin').value) || 0;
-  const entry = Number(document.getElementById('entry').value) || 0;
-  const current = Number(document.getElementById('current').value) || 0;
-  const sl = document.getElementById('sl').value ? Number(document.getElementById('sl').value) : null;
-  const tp = document.getElementById('tp').value ? Number(document.getElementById('tp').value) : null;
-  const lev = Number(document.getElementById('lev').value) || 1;
-
-  if(entry <= 0 || margin <= 0){ document.getElementById('pnlRes').innerText = 'Entry and Margin must be > 0'; return; }
-
-  const positionSize = margin * lev;
-  const coins = positionSize / entry;
-
-  function profitAt(price){
-    if(!price && price !== 0) return null;
-    let p = (side === 'long') ? (price - entry) * coins : (entry - price) * coins;
-    const roi = (p / margin) * 100;
-    return {usd: p, roi: roi};
+  if(isNaN(margin)||isNaN(lev)||isNaN(entry)||isNaN(current)){
+    alert("Please fill all required fields"); return;
   }
 
-  const cur = profitAt(current);
-  const slp = profitAt(sl);
-  const tpp = profitAt(tp);
+  let positionSize = margin * lev; 
+  let qty = positionSize / entry; 
 
-  let out = '';
-  out += `Position: ${side.toUpperCase()}  | Margin: $${fmt(margin)}  | Leverage: x${lev}\n`;
-  out += `Notional (position size): $${fmt(positionSize)}  | Contracts: ${fmt(coins)}\n\n`;
-  out += `Entry: ${fmt(entry)}\n`;
-  out += `Current: ${fmt(current)} → Profit: ${cur ? ('$'+fmt(cur.usd)+'  ('+fmt(cur.roi)+'%)') : '—'}\n`;
-  out += `Stop Loss: ${sl?fmt(sl):'—'} → Profit: ${slp?('$'+fmt(slp.usd)+'  ('+fmt(slp.roi)+'%)'):'—'}\n`;
-  out += `Take Profit: ${tp?fmt(tp):'—'} → Profit: ${tpp?('$'+fmt(tpp.usd)+'  ('+fmt(tpp.roi)+'%)'):'—'}\n\n`;
-  out += 'নোট: margin * leverage = position size ধরে হিসাব করা হয়েছে; fees বা exchange-specific contract-size ignore করা হয়েছে।';
+  function pnl(price){
+    if(side === "long"){
+      return (price - entry) * qty;
+    } else {
+      return (entry - price) * qty;
+    }
+  }
 
-  document.getElementById('pnlRes').innerText = out;
+  let pnlCurrent = pnl(current);
+  let pnlSL = isNaN(sl)? null : pnl(sl);
+  let pnlTP = isNaN(tp)? null : pnl(tp);
+  let roi = (pnlCurrent / margin) * 100;
 
-  const labels = ['Entry','Stop Loss','Current','Take Profit'];
-  const data = [entry, sl || null, current, tp || null];
+  let liq;
+  if(side === "long"){
+    liq = entry * (1 - 1/lev);
+  } else {
+    liq = entry * (1 + 1/lev);
+  }
 
-  if(window.myChart) window.myChart.destroy();
+  let fundingFee = isNaN(fundingRate)? null : margin * (fundingRate/100);
+
+  document.getElementById('cPnl').innerText = pnlCurrent.toFixed(2);
+  document.getElementById('roi').innerText = roi.toFixed(2) + "%";
+  document.getElementById('slPnl').innerText = pnlSL !== null ? pnlSL.toFixed(2) : "-";
+  document.getElementById('tpPnl').innerText = pnlTP !== null ? pnlTP.toFixed(2) : "-";
+  document.getElementById('liq').innerText = liq.toFixed(4);
+  document.getElementById('fundingFee').innerText = fundingFee !== null ? fundingFee.toFixed(4) : "-";
+
+  // Chart
   const ctx = document.getElementById('pnlChart').getContext('2d');
+  if(window.myChart) window.myChart.destroy();
   window.myChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: labels,
+      labels: ["Entry", "StopLoss", "Current", "TakeProfit", "Liquidation"],
       datasets: [{
         label: 'Price Levels',
-        data: data,
+        data: [entry, sl||null, current, tp||null, liq],
         borderColor: 'blue',
-        tension: 0.2,
         fill: false,
-        spanGaps: true,
-        pointRadius: 6
+        spanGaps:true,
+        pointBackgroundColor:["blue","red","green","orange","black"],
+        pointRadius:6
       }]
     },
-    options: { responsive: true, scales: { y: { beginAtZero: false } } }
+    options:{responsive:true,plugins:{legend:{display:false}}}
   });
 }
-
-document.getElementById('calc').addEventListener('click', compute);
 </script>
 </body>
 </html>
