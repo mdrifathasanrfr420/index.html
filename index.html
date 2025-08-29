@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark"> 
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,7 +45,7 @@
         <div class="flex items-center">
             <span class="text-sm text-gray-500 dark:text-gray-400 mr-3 font-medium">Light / Dark</span>
             <label for="theme-toggle" class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" id="theme-toggle" class="sr-only peer" checked>
+                <input type="checkbox" id="theme-toggle" class="sr-only peer">
                 <div class="w-11 h-6 bg-gray-300 dark:bg-gray-700 rounded-full peer peer-checked:bg-indigo-600 transition-colors"></div>
                 <div class="absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform peer-checked:translate-x-full"></div>
             </label>
@@ -74,7 +74,7 @@
                         <label for="margin" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Margin (USDT)</label>
                         <div class="flex items-center">
                             <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-semibold bg-gray-100 dark:bg-gray-600">$</span>
-                            <input type="number" id="margin" value="100" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
+                            <input type="number" id="margin" placeholder="100" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
@@ -83,7 +83,7 @@
                         <label for="leverage" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Leverage</label>
                         <div class="flex items-center">
                             <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-white text-sm font-semibold bg-gray-100 dark:bg-gray-600">x</span>
-                            <input type="number" id="leverage" value="10" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
+                            <input type="number" id="leverage" placeholder="10" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
@@ -92,7 +92,7 @@
                         <label for="entry" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Entry Price</label>
                         <div class="flex items-center">
                             <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-blue-600">Entry</span>
-                            <input type="number" id="entry" value="50000" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
+                            <input type="number" id="entry" placeholder="50000" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
                         <label for="current" class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Current Price</label>
                         <div class="flex items-center">
                             <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 text-white text-sm font-semibold bg-green-600">Current</span>
-                            <input type="number" id="current" value="51000" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
+                            <input type="number" id="current" placeholder="51000" class="w-full py-2.5 px-3 bg-white dark:bg-gray-700/70 border border-gray-300 dark:border-gray-600 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-300">
                         </div>
                     </div>
 
@@ -197,7 +197,8 @@ themeToggle.addEventListener('change', () => {
         localStorage.theme = 'light';
     }
     // Re-calculate (which also redraws the chart) to update chart colors
-    if(window.myChart) {
+    // Check if a chart instance exists and results are visible before trying to recalculate
+    if(window.myChart && document.getElementById('results').style.display !== 'none') {
         calculate();
     }
 });
@@ -215,6 +216,8 @@ function calculate() {
     if (isNaN(margin) || isNaN(leverage) || isNaN(entry) || isNaN(current)) {
         // You can add a more user-friendly error message here if you want
         console.error("Please fill in all required fields.");
+        // Optionally, show an alert or a message to the user
+        // alert("Please fill in all required fields: Margin, Leverage, Entry Price, and Current Price.");
         return;
     }
     
@@ -315,12 +318,8 @@ function calculate() {
         }
     });
 }
-
-// Automatically run calculate on page load with initial values
-window.onload = function() {
-    calculate();
-}
 </script>
 
 </body>
 </html>
+
